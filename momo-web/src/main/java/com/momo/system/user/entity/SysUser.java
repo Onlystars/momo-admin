@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.momo.system.permission.entity.SysPermission;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * FileName: SysUser
@@ -63,4 +65,7 @@ public class SysUser implements UserDetails, Serializable {
     private Date updateTime;
     //是否是管理员 1：是 0 ：不是
     private String isAdmin;
+    //用户权限列表,不属于用户表字段，需要排除
+    @TableField(exist = false)
+    List<SysPermission> permissionList;
 }
