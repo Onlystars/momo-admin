@@ -52,7 +52,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             //获取路由数据
             List<SysPermission> routerList = permissionList.stream().filter(item -> item != null && item.getType().equals("1")).collect(Collectors.toList());
             vo.setRouterList(routerList);
-
         }
         String str = JSONObject.toJSONString(ResultUtils.success("认证成功",vo), SerializerFeature.DisableCircularReferenceDetect);
         out.write(str.getBytes("UTF-8"));
@@ -67,24 +66,19 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      * @return
      */
     private static List<SysPermission> makeTree(List<SysPermission> menuList, Long pId) {
-
-        //子类
-        List<SysPermission> children = menuList.stream().filter(x -> x.getParentId() == pId).collect(Collectors.toList());
-
-        //后辈中的非子类
-        List<SysPermission> successor = menuList.stream().filter(x -> x.getParentId() != pId).collect(Collectors.toList());
-        if (children.size() > 0) {
-            children.forEach(x ->
+        //顶级菜单
+        List<SysPermission> topMenuList = menuList.stream().filter(x -> x.getParentId() == pId).collect(Collectors.toList());
+        //附属菜单
+        List<SysPermission> childrenMenuList = menuList.stream().filter(x -> x.getParentId() != pId).collect(Collectors.toList());
+        if (topMenuList.size() > 0) {
+            topMenuList.forEach(x ->
                     {
-                        if(successor.size() > 0){
-                            makeTree(successor, x.getId()).forEach(
-                                    y -> x.getChildren().add(y)
-                            );
+                        if (childrenMenuList.size() > 0) {
+                            makeTree(childrenMenuList, x.getId()).forEach(y -> x.getChildren().add(y));
                         }
                     }
             );
         }
-        return children;
-
+        return topMenuList;
     }
 }

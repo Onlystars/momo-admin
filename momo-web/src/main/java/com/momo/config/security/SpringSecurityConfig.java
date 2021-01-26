@@ -70,7 +70,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/user/login","api/user/image").permitAll()
+                .antMatchers("/api/user/login","/api/user/image").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

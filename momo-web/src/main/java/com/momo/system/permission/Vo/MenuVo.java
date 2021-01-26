@@ -17,9 +17,9 @@ import java.util.List;
  */
 @Data
 public class MenuVo implements Serializable {
-    private List<SysPermission> menuList;
-    private List<String> authList;
-    private List<SysPermission> routerList;
-    private String token;
-    private Long userId;
+    private List<SysPermission> menuList; // 菜单列表
+    private List<String> authList; // 权限字符列表
+    private List<SysPermission> routerList; // 路由列表
+    private String token; // token
+    private Long userId; // 用户id
 }
