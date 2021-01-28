@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.momo.result.ResultUtils;
 import com.momo.result.ResultVo;
 import com.momo.status.CodeStatus;
+import com.momo.system.permission.Vo.TreeVo;
 import com.momo.system.permission.entity.SysPermission;
 import com.momo.system.permission.serivce.SysPermissionService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,4 +67,47 @@ public class SysPermissionController {
         return topMenuList;
     }
 
+    /**
+     * 新增权限
+     * @param sysPermission
+     * @return
+     */
+    @PostMapping("/addPermission")
+    public ResultVo addPermission(@RequestBody SysPermission sysPermission){
+        sysPermissionService.save(sysPermission);
+        return ResultUtils.success("新增权限成功");
+    }
+
+    /**
+     * 新增权限时，获取上级菜单树
+     * @return
+     */
+    @GetMapping("/getParentTree")
+    public ResultVo getParentTree(){
+        QueryWrapper<SysPermission> query = new QueryWrapper<>();
+        query.lambda().eq(SysPermission::getType, "0").or().eq(SysPermission::getType, "1");
+        List<SysPermission> list = sysPermissionService.list(query);
+        ArrayList<TreeVo> listTree = new ArrayList<>();
+        TreeVo parentTree = new TreeVo();
+        parentTree.setId(0L);
+        parentTree.setPid(-1L);
+        parentTree.setName("顶级菜单");
+        parentTree.setOpen(true);
+        parentTree.setChecked(false);
+        listTree.add(parentTree);
+        if(list.size()>0){
+            for(SysPermission p:list){
+                if(p!=null){
+                    TreeVo tree = new TreeVo();
+                    tree.setId(p.getId());
+                    tree.setPid(p.getParentId());
+                    tree.setName(p.getLabel());
+                    tree.setOpen(true);
+                    tree.setChecked(false);
+                    listTree.add(tree);
+                }
+            }
+        }
+        return ResultUtils.success("获取上级菜单树成功",listTree);
+    }
 }

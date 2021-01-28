@@ -1,5 +1,6 @@
 package com.momo.security.filter;
 
+import com.momo.jwt.JwtUtils;
 import com.momo.security.detailservice.CustomerUserDetailsService;
 import com.momo.security.handler.LoginFailureHandler;
 import com.momo.security.image_code.ImageCodeException;
@@ -7,7 +8,11 @@ import com.momo.system.user.controller.SysUserController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,6 +39,9 @@ public class CheckTokenFilter extends OncePerRequestFilter {
     private String loginUrl;
 
     @Resource
+    private JwtUtils jwtUtils;
+
+    @Resource
     private CustomerUserDetailsService customerUserDetailsService;
     @Resource
     private LoginFailureHandler loginFailureHandler;
@@ -51,10 +59,43 @@ public class CheckTokenFilter extends OncePerRequestFilter {
                 // 一定要记得结束
                 return;
             }
+        }else{
+            //验证token,验证码请求不需要验证token
+            String imgurl = request.getRequestURI();
+            if(!imgurl.equals("/api/user/image")){
+                try{
+                    validateToken(request);
+                }catch (AuthenticationException e){
+                    loginFailureHandler.onAuthenticationFailure(request,response,e);
+                    return;
+                }
+            }
         }
         // 放行请求
         filterChain.doFilter(request, response);
     }
+
+    //验证token
+    private void validateToken(HttpServletRequest request){
+        //获取前端传来的token
+        String token = request.getHeader("token");
+        //解析token，获取用户名
+        String username = jwtUtils.getUsernameFromToken(token);
+        //如果token或者用户名为空的话，不能通过认证
+        if(StringUtils.isBlank(token) || StringUtils.isBlank(username)){
+            throw new ImageCodeException("token验证失败!");
+        }
+        UserDetails userDetails = customerUserDetailsService.loadUserByUsername(username);
+        if(userDetails == null){
+            throw new ImageCodeException("token验证失败!");
+        }
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        //设置为已登录
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    }
+
     private void validate(HttpServletRequest request){
         // 获取用户输入的验证码
         String inpuCode = request.getParameter("code");
