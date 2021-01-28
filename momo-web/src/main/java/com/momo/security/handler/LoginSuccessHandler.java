@@ -66,7 +66,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      * @return
      */
     private static List<SysPermission> makeTree(List<SysPermission> menuList, Long pId) {
-        //顶级菜单
+        //主菜单
         List<SysPermission> topMenuList = menuList.stream().filter(x -> x.getParentId() == pId).collect(Collectors.toList());
         //附属菜单
         List<SysPermission> childrenMenuList = menuList.stream().filter(x -> x.getParentId() != pId).collect(Collectors.toList());
