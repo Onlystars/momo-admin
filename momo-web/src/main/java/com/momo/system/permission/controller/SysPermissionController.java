@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class SysPermissionController {
      *
      * @return
      */
-    @PostMapping("/getMenuList")
+    @GetMapping("/getMenuList")
     public ResultVo getMenuList() {
         QueryWrapper<SysPermission> wrapper = new QueryWrapper<>();
         wrapper.lambda().orderByAsc(SysPermission::getOrderNum);
@@ -110,4 +111,49 @@ public class SysPermissionController {
         }
         return ResultUtils.success("获取上级菜单树成功",listTree);
     }
+
+    /**
+     * 根据permission id查询菜单
+     * @param id
+     * @return
+     */
+    @PostMapping("/getMenuById")
+    public ResultVo getMenuById(@RequestParam Integer id){
+        SysPermission menu = sysPermissionService.getById(id);
+        return ResultUtils.success("菜单查询成功",menu);
+    }
+
+    /**
+     * 根据id更新权限
+     * @param permission
+     * @return
+     */
+    @PostMapping("/editSave")
+    public ResultVo editSave(@RequestBody SysPermission permission){
+        permission.setCreateTime(new Date());
+        boolean res = sysPermissionService.updateById(permission);
+        if(res){
+            return ResultUtils.success("更新成功");
+        }else{
+            return ResultUtils.error("更新失败");
+        }
+
+    }
+
+    /**
+     * 删除权限
+     * @return
+     */
+    @PostMapping("/deleteEntity")
+    public ResultVo deleteEntity(@RequestBody SysPermission permission){
+
+        boolean b = sysPermissionService.removeById(permission.getId());
+        if(b){
+            return ResultUtils.success("删除成功!");
+        }else{
+            return ResultUtils.error("删除失败!");
+        }
+
+    }
+
 }
