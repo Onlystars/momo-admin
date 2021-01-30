@@ -3,11 +3,10 @@ package com.momo.system.user.controller;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.momo.result.ResultVo;
 import com.momo.system.user.entity.SysUser;
-import com.momo.system.user.service.SysUserService;
+import com.momo.system.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -31,10 +30,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
-public class SysUserController {
+public class UserController {
     public static final String SESSION_KEY = "IMAGE_CODE";
     @Resource
-    private SysUserService sysUserService;
+    private UserService userService;
     @Resource
     private DefaultKaptcha defaultKaptcha;
     /**
@@ -64,7 +63,7 @@ public class SysUserController {
     @PostMapping("/getList")
     public ResultVo getUser(){
         ResultVo<List<SysUser>> resultVo = new ResultVo<>();
-        List<SysUser> list = sysUserService.list();
+        List<SysUser> list = userService.list();
         resultVo.setData(list);
         return resultVo;
     }

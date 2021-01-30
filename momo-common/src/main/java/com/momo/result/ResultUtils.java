@@ -1,6 +1,5 @@
 package com.momo.result;
 
-import com.momo.status.CodeStatus;
 /**
  * FileName: ResultUtils
  * Author: zipeng Li

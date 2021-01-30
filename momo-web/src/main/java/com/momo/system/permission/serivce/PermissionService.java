@@ -14,7 +14,7 @@ import java.util.List;
  * <author>    <time>    <version>    <desc>
  * 作者姓名     修改时间     版本号       描述
  */
-public interface SysPermissionService extends IService<SysPermission> {
+public interface PermissionService extends IService<SysPermission> {
     /**
      * 根据用户Id查询所有的权限
      * @param userId

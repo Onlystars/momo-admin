@@ -2,9 +2,10 @@ package com.momo.security.filter;
 
 import com.momo.jwt.JwtUtils;
 import com.momo.security.detailservice.CustomerUserDetailsService;
+import com.momo.security.exception.TokenException;
 import com.momo.security.handler.LoginFailureHandler;
-import com.momo.security.image_code.ImageCodeException;
-import com.momo.system.user.controller.SysUserController;
+import com.momo.security.exception.ImageCodeException;
+import com.momo.system.user.controller.UserController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,11 +84,11 @@ public class CheckTokenFilter extends OncePerRequestFilter {
         String username = jwtUtils.getUsernameFromToken(token);
         //如果token或者用户名为空的话，不能通过认证
         if(StringUtils.isBlank(token) || StringUtils.isBlank(username)){
-            throw new ImageCodeException("token验证失败!");
+            throw new TokenException("token验证失败!");
         }
         UserDetails userDetails = customerUserDetailsService.loadUserByUsername(username);
         if(userDetails == null){
-            throw new ImageCodeException("token验证失败!");
+            throw new TokenException("token验证失败!");
         }
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -101,7 +102,7 @@ public class CheckTokenFilter extends OncePerRequestFilter {
         String inpuCode = request.getParameter("code");
         // 先获取seesion中的验证码
         String sessionCode =
-                (String)request.getSession().getAttribute(SysUserController.SESSION_KEY);
+                (String)request.getSession().getAttribute(UserController.SESSION_KEY);
         if(StringUtils.isBlank(inpuCode)) {
             throw new ImageCodeException("验证码不能为空");
         }

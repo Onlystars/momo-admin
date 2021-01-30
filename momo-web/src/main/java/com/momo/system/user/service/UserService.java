@@ -12,7 +12,7 @@ import com.momo.system.user.entity.SysUser;
  * <author>    <time>    <version>    <desc>
  * 作者姓名     修改时间     版本号       描述
  */
-public interface SysUserService extends IService<SysUser> {
+public interface UserService extends IService<SysUser> {
     /**
      * 根据用户名查询用户信息
      * @param username

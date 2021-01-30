@@ -2,7 +2,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.momo.system.permission.mapper.SysPermissionMapper">
+<mapper namespace="com.momo.system.permission.mapper.PermissionMapper">
     <!--根据用户id查询所有权限-->
     <select parameterType="long" id="selectPermissionByUserId" resultType="com.momo.system.permission.entity.SysPermission">
         SELECT DISTINCT

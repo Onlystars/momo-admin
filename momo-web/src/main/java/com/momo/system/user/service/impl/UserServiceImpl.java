@@ -3,8 +3,8 @@ package com.momo.system.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.momo.system.user.entity.SysUser;
-import com.momo.system.user.mapper.SysUserMapper;
-import com.momo.system.user.service.SysUserService;
+import com.momo.system.user.mapper.UserMapper;
+import com.momo.system.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * 作者姓名     修改时间     版本号       描述
  */
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements UserService {
 
     @Override
     public SysUser getSysUserByUserName(String username) {

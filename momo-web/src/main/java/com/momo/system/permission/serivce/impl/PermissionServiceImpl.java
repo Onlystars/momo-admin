@@ -2,8 +2,8 @@ package com.momo.system.permission.serivce.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.momo.system.permission.entity.SysPermission;
-import com.momo.system.permission.mapper.SysPermissionMapper;
-import com.momo.system.permission.serivce.SysPermissionService;
+import com.momo.system.permission.mapper.PermissionMapper;
+import com.momo.system.permission.serivce.PermissionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  * 作者姓名     修改时间     版本号       描述
  */
 @Service
-public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements SysPermissionService {
+public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, SysPermission> implements PermissionService {
     @Override
 //    @Cacheable(value = "permissions",key = "#userId")
     public List<SysPermission> selectPermissionByUserId(Long userId) {

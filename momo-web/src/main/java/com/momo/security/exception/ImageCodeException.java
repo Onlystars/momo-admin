@@ -1,4 +1,4 @@
-package com.momo.security.image_code;
+package com.momo.security.exception;
 
 
 import org.springframework.security.core.AuthenticationException;

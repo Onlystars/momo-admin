@@ -12,5 +12,5 @@ import com.momo.system.user.entity.SysUser;
  * <author>    <time>    <version>    <desc>
  * 作者姓名     修改时间     版本号       描述
  */
-public interface SysUserMapper extends BaseMapper<SysUser> {
+public interface UserMapper extends BaseMapper<SysUser> {
 }

@@ -3,10 +3,10 @@ package com.momo.system.permission.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.momo.result.ResultUtils;
 import com.momo.result.ResultVo;
-import com.momo.status.CodeStatus;
-import com.momo.system.permission.Vo.TreeVo;
+import com.momo.result.CodeStatus;
+import com.momo.system.permission.vo.TreeVo;
 import com.momo.system.permission.entity.SysPermission;
-import com.momo.system.permission.serivce.SysPermissionService;
+import com.momo.system.permission.serivce.PermissionService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/permission")
-public class SysPermissionController {
+public class PermissionController {
     @Resource
-    private SysPermissionService sysPermissionService;
+    private PermissionService permissionService;
 
     /**
      * 获取菜单列表
@@ -39,7 +39,7 @@ public class SysPermissionController {
     public ResultVo getMenuList() {
         QueryWrapper<SysPermission> wrapper = new QueryWrapper<>();
         wrapper.lambda().orderByAsc(SysPermission::getOrderNum);
-        List<SysPermission> list = sysPermissionService.list(wrapper);
+        List<SysPermission> list = permissionService.list(wrapper);
         List<SysPermission> menuList = null;
         if (!list.isEmpty()) {
             menuList = generateTree(list, 0L);
@@ -75,7 +75,7 @@ public class SysPermissionController {
      */
     @PostMapping("/addPermission")
     public ResultVo addPermission(@RequestBody SysPermission sysPermission){
-        sysPermissionService.save(sysPermission);
+        permissionService.save(sysPermission);
         return ResultUtils.success("新增权限成功");
     }
 
@@ -87,7 +87,7 @@ public class SysPermissionController {
     public ResultVo getParentTree(){
         QueryWrapper<SysPermission> query = new QueryWrapper<>();
         query.lambda().eq(SysPermission::getType, "0").or().eq(SysPermission::getType, "1");
-        List<SysPermission> list = sysPermissionService.list(query);
+        List<SysPermission> list = permissionService.list(query);
         ArrayList<TreeVo> listTree = new ArrayList<>();
         TreeVo parentTree = new TreeVo();
         parentTree.setId(0L);
@@ -117,9 +117,9 @@ public class SysPermissionController {
      * @param id
      * @return
      */
-    @PostMapping("/getMenuById")
+    @GetMapping("/getMenuById")
     public ResultVo getMenuById(@RequestParam Integer id){
-        SysPermission menu = sysPermissionService.getById(id);
+        SysPermission menu = permissionService.getById(id);
         return ResultUtils.success("菜单查询成功",menu);
     }
 
@@ -131,7 +131,7 @@ public class SysPermissionController {
     @PostMapping("/editSave")
     public ResultVo editSave(@RequestBody SysPermission permission){
         permission.setCreateTime(new Date());
-        boolean res = sysPermissionService.updateById(permission);
+        boolean res = permissionService.updateById(permission);
         if(res){
             return ResultUtils.success("更新成功");
         }else{
@@ -147,7 +147,7 @@ public class SysPermissionController {
     @PostMapping("/deleteEntity")
     public ResultVo deleteEntity(@RequestBody SysPermission permission){
 
-        boolean b = sysPermissionService.removeById(permission.getId());
+        boolean b = permissionService.removeById(permission.getId());
         if(b){
             return ResultUtils.success("删除成功!");
         }else{

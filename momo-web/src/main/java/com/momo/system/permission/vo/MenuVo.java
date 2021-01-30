@@ -1,4 +1,4 @@
-package com.momo.system.permission.Vo;
+package com.momo.system.permission.vo;
 
 import com.momo.system.permission.entity.SysPermission;
 import lombok.Data;

@@ -2,7 +2,7 @@ package com.momo.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.momo.result.ResultUtils;
-import com.momo.status.CodeStatus;
+import com.momo.result.CodeStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.momo.jwt.JwtUtils;
 import com.momo.result.ResultUtils;
-import com.momo.system.permission.Vo.MenuVo;
+import com.momo.system.permission.vo.MenuVo;
 import com.momo.system.permission.entity.SysPermission;
 import com.momo.system.user.entity.SysUser;
 import org.springframework.security.core.Authentication;

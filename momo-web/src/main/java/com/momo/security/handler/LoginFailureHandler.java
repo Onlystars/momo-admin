@@ -2,8 +2,10 @@ package com.momo.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.momo.result.CodeStatus;
 import com.momo.result.ResultUtils;
-import com.momo.security.image_code.ImageCodeException;
+import com.momo.security.exception.ImageCodeException;
+import com.momo.security.exception.TokenException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -31,6 +33,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = httpServletResponse.getOutputStream();
         String str = null;
+        int code = 500;
         if (e instanceof AccountExpiredException) {
             //账号过期
             str = "账户过期，登录失败!";
@@ -51,11 +54,20 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             str = "用户不存在";
         }else if(e instanceof ImageCodeException){
             str = e.getMessage();
+        }else if(e instanceof TokenException){
+            //token异常
+            code = 202;
+            str = e.getMessage();
         }else{
             //其他错误
             str = "登录失败!";
         }
-        String rstr = JSONObject.toJSONString(ResultUtils.error(str), SerializerFeature.DisableCircularReferenceDetect);
+        String rstr;
+        if(code == 202){
+            rstr = JSONObject.toJSONString(ResultUtils.error(str, CodeStatus.TOKEN_ERROR), SerializerFeature.DisableCircularReferenceDetect);
+        }else{
+            rstr = JSONObject.toJSONString(ResultUtils.error(str), SerializerFeature.DisableCircularReferenceDetect);
+        }
         out.write(rstr.getBytes("UTF-8"));
         out.flush();
         out.close();

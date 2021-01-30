@@ -20,3 +20,12 @@ jwt:
 # 项目配置
 momo:
   login-url: /api/user/login
+
+# mybatis-plus 配置
+mybatis-plus:
+  global-config:
+    #驼峰下划线转换
+    db-column-underline: true
+  configuration:
+    # 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
