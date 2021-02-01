@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Slf4j
 @TableName(value = "sys_permission")
-public class SysPermission {
+public class Permission {
   @TableId(type = IdType.AUTO)
   private Long id;
   private Long parentId;
@@ -36,5 +36,5 @@ public class SysPermission {
   private Integer isHome;
   //不是数据库的字段需要排除
   @TableField(exist = false)
-  private List<SysPermission> children = new ArrayList<>();
+  private List<Permission> children = new ArrayList<>();
 }

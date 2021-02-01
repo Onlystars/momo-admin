@@ -1,7 +1,7 @@
 package com.momo.system.permission.serivce;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.momo.system.permission.entity.SysPermission;
+import com.momo.system.permission.entity.Permission;
 
 import java.util.List;
 
@@ -14,18 +14,18 @@ import java.util.List;
  * <author>    <time>    <version>    <desc>
  * 作者姓名     修改时间     版本号       描述
  */
-public interface PermissionService extends IService<SysPermission> {
+public interface PermissionService extends IService<Permission> {
     /**
      * 根据用户Id查询所有的权限
      * @param userId
      * @return
      */
-    List<SysPermission> selectPermissionByUserId(Long userId);
+    List<Permission> selectPermissionByUserId(Long userId);
 
     /**
      * 根据角色id查询所有的权限
      * @param roleId
      * @return
      */
-    List<SysPermission> findByRoleId(Long roleId);
+    List<Permission> findByRoleId(Long roleId);
 }

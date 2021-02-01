@@ -5,7 +5,7 @@ import com.momo.result.ResultUtils;
 import com.momo.result.ResultVo;
 import com.momo.result.CodeStatus;
 import com.momo.system.permission.vo.TreeVo;
-import com.momo.system.permission.entity.SysPermission;
+import com.momo.system.permission.entity.Permission;
 import com.momo.system.permission.serivce.PermissionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +37,10 @@ public class PermissionController {
      */
     @GetMapping("/getMenuList")
     public ResultVo getMenuList() {
-        QueryWrapper<SysPermission> wrapper = new QueryWrapper<>();
-        wrapper.lambda().orderByAsc(SysPermission::getOrderNum);
-        List<SysPermission> list = permissionService.list(wrapper);
-        List<SysPermission> menuList = null;
+        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
+        wrapper.lambda().orderByAsc(Permission::getOrderNum);
+        List<Permission> list = permissionService.list(wrapper);
+        List<Permission> menuList = null;
         if (!list.isEmpty()) {
             menuList = generateTree(list, 0L);
         }
@@ -53,11 +53,11 @@ public class PermissionController {
      * @param pid
      * @return
      */
-    private List<SysPermission> generateTree(List<SysPermission> menuList, Long pid) {
+    private List<Permission> generateTree(List<Permission> menuList, Long pid) {
         // 主菜单
-        List<SysPermission> topMenuList = menuList.stream().filter(e -> e.getParentId() == pid).collect(Collectors.toList());
+        List<Permission> topMenuList = menuList.stream().filter(e -> e.getParentId() == pid).collect(Collectors.toList());
         // 附属菜单
-        List<SysPermission> childrenList = menuList.stream().filter(e -> e.getParentId() != pid).collect(Collectors.toList());
+        List<Permission> childrenList = menuList.stream().filter(e -> e.getParentId() != pid).collect(Collectors.toList());
         if (topMenuList.size() > 0) {
             topMenuList.forEach(e -> {
                 if (childrenList.size() > 0) {
@@ -70,12 +70,12 @@ public class PermissionController {
 
     /**
      * 新增权限
-     * @param sysPermission
+     * @param permission
      * @return
      */
     @PostMapping("/addPermission")
-    public ResultVo addPermission(@RequestBody SysPermission sysPermission){
-        permissionService.save(sysPermission);
+    public ResultVo addPermission(@RequestBody Permission permission){
+        permissionService.save(permission);
         return ResultUtils.success("新增权限成功");
     }
 
@@ -85,9 +85,9 @@ public class PermissionController {
      */
     @GetMapping("/getParentTree")
     public ResultVo getParentTree(){
-        QueryWrapper<SysPermission> query = new QueryWrapper<>();
-        query.lambda().eq(SysPermission::getType, "0").or().eq(SysPermission::getType, "1");
-        List<SysPermission> list = permissionService.list(query);
+        QueryWrapper<Permission> query = new QueryWrapper<>();
+        query.lambda().eq(Permission::getType, "0").or().eq(Permission::getType, "1");
+        List<Permission> list = permissionService.list(query);
         ArrayList<TreeVo> listTree = new ArrayList<>();
         TreeVo parentTree = new TreeVo();
         parentTree.setId(0L);
@@ -97,7 +97,7 @@ public class PermissionController {
         parentTree.setChecked(false);
         listTree.add(parentTree);
         if(list.size()>0){
-            for(SysPermission p:list){
+            for(Permission p:list){
                 if(p!=null){
                     TreeVo tree = new TreeVo();
                     tree.setId(p.getId());
@@ -119,7 +119,7 @@ public class PermissionController {
      */
     @GetMapping("/getMenuById")
     public ResultVo getMenuById(@RequestParam Integer id){
-        SysPermission menu = permissionService.getById(id);
+        Permission menu = permissionService.getById(id);
         return ResultUtils.success("菜单查询成功",menu);
     }
 
@@ -129,7 +129,7 @@ public class PermissionController {
      * @return
      */
     @PostMapping("/editSave")
-    public ResultVo editSave(@RequestBody SysPermission permission){
+    public ResultVo editSave(@RequestBody Permission permission){
         permission.setCreateTime(new Date());
         boolean res = permissionService.updateById(permission);
         if(res){
@@ -145,7 +145,7 @@ public class PermissionController {
      * @return
      */
     @PostMapping("/deleteEntity")
-    public ResultVo deleteEntity(@RequestBody SysPermission permission){
+    public ResultVo deleteEntity(@RequestBody Permission permission){
 
         boolean b = permissionService.removeById(permission.getId());
         if(b){

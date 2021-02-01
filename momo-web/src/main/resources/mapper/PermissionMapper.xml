@@ -4,7 +4,7 @@
 
 <mapper namespace="com.momo.system.permission.mapper.PermissionMapper">
     <!--根据用户id查询所有权限-->
-    <select parameterType="long" id="selectPermissionByUserId" resultType="com.momo.system.permission.entity.SysPermission">
+    <select parameterType="long" id="selectPermissionByUserId" resultType="com.momo.system.permission.entity.Permission">
         SELECT DISTINCT
             p.id,
             p.parent_id,
@@ -31,7 +31,7 @@
         ORDER BY p.order_num ASC
     </select>
 
-    <select id="findByRoleId" resultType="com.momo.system.permission.entity.SysPermission">
+    <select id="findByRoleId" resultType="com.momo.system.permission.entity.Permission">
         SELECT
             DISTINCT p.*
         FROM

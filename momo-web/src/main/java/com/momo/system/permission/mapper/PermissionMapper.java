@@ -1,7 +1,7 @@
 package com.momo.system.permission.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.momo.system.permission.entity.SysPermission;
+import com.momo.system.permission.entity.Permission;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,18 +15,18 @@ import java.util.List;
  * <author>    <time>    <version>    <desc>
  * 作者姓名     修改时间     版本号       描述
  */
-public interface PermissionMapper extends BaseMapper<SysPermission> {
+public interface PermissionMapper extends BaseMapper<Permission> {
     /**
      * 根据用户Id查询所有的权限
      * @param userId
      * @return
      */
-    List<SysPermission> selectPermissionByUserId(@Param("userId") Long userId);
+    List<Permission> selectPermissionByUserId(@Param("userId") Long userId);
 
     /**
      * 根据角色id查询所有的权限
      * @param roleId
      * @return
      */
-    List<SysPermission> findByRoleId(@Param("roleId") Long roleId);
+    List<Permission> findByRoleId(@Param("roleId") Long roleId);
 }

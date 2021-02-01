@@ -5,15 +5,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.momo.result.ResultUtils;
 import com.momo.result.ResultVo;
+import com.momo.system.permission.entity.Permission;
+import com.momo.system.permission.serivce.PermissionService;
 import com.momo.system.permission.vo.TreeVo;
 import com.momo.system.role.entity.SysRole;
 import com.momo.system.role.service.RoleService;
+import com.momo.system.role.vo.PerVo;
 import com.momo.system.role.vo.RoleParm;
+import com.momo.system.role_permission.service.RolePermissionService;
+import com.momo.system.role_permission.vo.PermissionRoleParmVo;
+import com.momo.system.user.entity.SysUser;
+import com.momo.system.user.service.UserService;
 import com.momo.system.user_role.entity.UserRole;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +39,12 @@ import java.util.stream.Collectors;
 public class RoleController {
     @Resource
     private RoleService roleService;
+    @Resource
+    private UserService userService;
+    @Resource
+    private PermissionService permissionService;
+    @Resource
+    private RolePermissionService rolePermissionService;
 
     /**
      * 新增角色
@@ -142,4 +156,58 @@ public class RoleController {
         return ResultUtils.success("分配角色成功");
     }
 
+    /**
+     * 分配权限树查询
+     * @return
+     */
+    @RequestMapping(value = "/permissionTree",method = RequestMethod.POST)
+    public ResultVo permissionTree(@RequestBody PerVo perVo){
+        Long userId = perVo.getUserId();
+        List<Permission> permission = null;
+        //1.查询当前用户的所有权限
+        SysUser user = userService.getById(userId);
+        if(StringUtils.isNotEmpty(user.getIsAdmin()) && user.getIsAdmin().equals("1")){
+            permission = permissionService.list();
+        }else{
+            permission = permissionService.selectPermissionByUserId(userId);
+        }
+        //查询角色原来的数据，设置为选中
+        List<Permission> permissionListByRoleId = permissionService.findByRoleId(perVo.getRoleId());
+        //组装成树数据
+        List<TreeVo> listTree = new ArrayList<>();
+        if(permission != null){
+            for(int i =0;i< permission.size();i++){
+                if(permission.get(i) != null){
+                    TreeVo tree = new TreeVo();
+                    tree.setId(permission.get(i).getId());
+                    tree.setPid(permission.get(i).getParentId());
+                    tree.setName(permission.get(i).getLabel());
+                    if(permissionListByRoleId.size() >0){
+                        for(int j=0;j < permissionListByRoleId.size();j++){
+                            if(permission.get(i).getId().equals(permissionListByRoleId.get(j).getId())){
+                                tree.setChecked(true);
+                                break;
+                            }
+                        }
+                    }
+                    listTree.add(tree);
+                }
+            }
+        }
+        return ResultUtils.success("查询成功",listTree);
+    }
+
+    //保存权限
+    @RequestMapping(value = "/saveAssignRole",method = RequestMethod.POST)
+    public ResultVo saveAssignRole(@RequestBody PermissionRoleParmVo parmVo){
+        if(parmVo != null && !parmVo.getList().isEmpty()){
+            List<TreeVo> list = parmVo.getList();
+            Long roleId = parmVo.getRoleId();
+            List<Long> ids = list.stream().filter(item -> item != null).map(item -> item.getId()).collect(Collectors.toList());
+            rolePermissionService.saveAssignRole(roleId,ids);
+            return ResultUtils.success("分配成功!");
+        }else{
+            return ResultUtils.error("请选择权限!");
+        }
+    }
 }

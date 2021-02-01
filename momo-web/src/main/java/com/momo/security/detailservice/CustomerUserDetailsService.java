@@ -1,6 +1,6 @@
 package com.momo.security.detailservice;
 
-import com.momo.system.permission.entity.SysPermission;
+import com.momo.system.permission.entity.Permission;
 import com.momo.system.permission.serivce.PermissionService;
 import com.momo.system.user.entity.SysUser;
 import com.momo.system.user.service.UserService;
@@ -46,7 +46,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("用户名或密码错误!");
         }
         //3.查询用户权限，设置到SysUser 的 authorities 中
-        List<SysPermission> permissions = permissionService.selectPermissionByUserId(sysUser.getId());
+        List<Permission> permissions = permissionService.selectPermissionByUserId(sysUser.getId());
         //4.获取code字段
         List<String> collect = permissions.stream().filter(item -> item != null).map(item -> item.getCode()).collect(Collectors.toList());
         //5.转成数组

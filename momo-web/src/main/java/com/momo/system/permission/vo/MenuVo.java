@@ -1,6 +1,6 @@
 package com.momo.system.permission.vo;
 
-import com.momo.system.permission.entity.SysPermission;
+import com.momo.system.permission.entity.Permission;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,9 +17,9 @@ import java.util.List;
  */
 @Data
 public class MenuVo implements Serializable {
-    private List<SysPermission> menuList; // 菜单列表
+    private List<Permission> menuList; // 菜单列表
     private List<String> authList; // 权限字符列表
-    private List<SysPermission> routerList; // 路由列表
+    private List<Permission> routerList; // 路由列表
     private String token; // token
     private Long userId; // 用户id
 }
