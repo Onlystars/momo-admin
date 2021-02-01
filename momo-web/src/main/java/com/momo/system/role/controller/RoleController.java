@@ -5,13 +5,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.momo.result.ResultUtils;
 import com.momo.result.ResultVo;
+import com.momo.system.permission.vo.TreeVo;
 import com.momo.system.role.entity.SysRole;
 import com.momo.system.role.service.RoleService;
 import com.momo.system.role.vo.RoleParm;
+import com.momo.system.user_role.entity.UserRole;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * FileName: RoleController
@@ -30,75 +34,112 @@ public class RoleController {
 
     /**
      * 新增角色
+     *
      * @param role
      * @return
      */
-    @RequestMapping(value = "addRole",method = RequestMethod.POST)
-    public ResultVo addRole(@RequestBody SysRole role){
+    @RequestMapping(value = "addRole", method = RequestMethod.POST)
+    public ResultVo addRole(@RequestBody SysRole role) {
         boolean b = roleService.save(role);
-        if(b){
+        if (b) {
             return ResultUtils.success("新增成功!");
-        }else{
+        } else {
             return ResultUtils.error("新增失败！");
         }
     }
 
     /**
      * 根据id查询角色
+     *
      * @return
      */
-    @RequestMapping(value = "/getRoleById",method = RequestMethod.GET)
-    public ResultVo getRoleById(@RequestParam Integer id){
+    @RequestMapping(value = "/getRoleById", method = RequestMethod.GET)
+    public ResultVo getRoleById(@RequestParam Integer id) {
         SysRole role = roleService.getById(id);
-        return ResultUtils.success("成功",role);
+        return ResultUtils.success("成功", role);
 
     }
 
     /**
      * 编辑角色
+     *
      * @return
      */
-    @RequestMapping(value = "/updateRole",method = RequestMethod.POST)
-    public ResultVo updateRole(@RequestBody SysRole sysRole){
+    @RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+    public ResultVo updateRole(@RequestBody SysRole sysRole) {
         boolean b = roleService.updateById(sysRole);
-        if(b){
+        if (b) {
             return ResultUtils.success("编辑角色成功!");
-        }else{
+        } else {
             return ResultUtils.error("编辑角色失败!");
         }
     }
 
     /**
      * 删除角色
+     *
      * @return
      */
-    @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
-    public ResultVo deleteRole(@RequestBody SysRole sysRole){
+    @RequestMapping(value = "/deleteRole", method = RequestMethod.POST)
+    public ResultVo deleteRole(@RequestBody SysRole sysRole) {
         boolean b = roleService.removeById(sysRole.getId());
-        if(b){
+        if (b) {
             return ResultUtils.success("删除角色成功!");
-        }else{
+        } else {
             return ResultUtils.error("删除角色失败!");
         }
     }
 
     /**
      * 查询角色列表
+     *
      * @param parmVo
      * @return
      */
-    @RequestMapping(value = "/getRoleList",method = RequestMethod.POST)
-    public ResultVo getRoleList(@RequestBody RoleParm parmVo){
+    @RequestMapping(value = "/getRoleList", method = RequestMethod.POST)
+    public ResultVo getRoleList(@RequestBody RoleParm parmVo) {
         QueryWrapper<SysRole> query = new QueryWrapper<>();
-        if(!StringUtils.isBlank(parmVo.getTitle())){
-            query.lambda().like(SysRole::getName,parmVo.getTitle());
+        if (!StringUtils.isBlank(parmVo.getTitle())) {
+            query.lambda().like(SysRole::getName, parmVo.getTitle());
         }
         IPage<SysRole> page = new Page();
         page.setSize(parmVo.getPageSize());
         page.setCurrent(parmVo.getCurrentPage());
         IPage<SysRole> roleList = roleService.page(page, query);
-        return ResultUtils.success("查询成功",roleList);
+        return ResultUtils.success("查询成功", roleList);
     }
 
+    /**
+     * 分配角色角色列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getRolistForAssing", method = RequestMethod.GET)
+    public ResultVo getRolistForAssing() {
+        List<SysRole> list = roleService.list();
+        return ResultUtils.success("查询成功", list);
+    }
+
+    /**
+     * 根据用户id查询角色id
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getRoleIdByUserId", method = RequestMethod.POST)
+    public ResultVo getRoleIdByUserId(@RequestBody UserRole userRole) {
+        UserRole roleIdByUserId = roleService.getRoleIdByUserId(userRole.getUserId());
+        return ResultUtils.success("查询成功", roleIdByUserId);
+    }
+
+    /**
+     * 分配角色保存
+     *
+     * @return
+     */
+    @RequestMapping(value = "/assingRole", method = RequestMethod.POST)
+    public ResultVo assingRole(@RequestBody UserRole userRole) {
+        roleService.assingRole(userRole);
+        return ResultUtils.success("分配角色成功");
+    }
 
 }

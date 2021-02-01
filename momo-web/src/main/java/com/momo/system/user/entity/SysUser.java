@@ -51,6 +51,8 @@ public class SysUser implements UserDetails, Serializable {
     private String nickName;
     //手机号
     private String mobile;
+    //性别 0 男 1 女
+    private String sex;
     //邮箱
     private String email;
     //部门id

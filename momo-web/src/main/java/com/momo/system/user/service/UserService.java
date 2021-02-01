@@ -2,6 +2,7 @@ package com.momo.system.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.momo.system.user.entity.SysUser;
+import com.momo.system.user_role.entity.UserRole;
 
 /**
  * FileName: SysUserService
